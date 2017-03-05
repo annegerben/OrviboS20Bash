@@ -7,7 +7,7 @@ twenties="202020202020"
 reversedMac=${mac:10:1}${mac:11:1}${mac:8:1}${mac:9:1}${mac:6:1}${mac:7:1}${mac:4:1}${mac:5:1}${mac:2:1}${mac:3:1}${mac:0:1}${mac:1:1}
 
 # Subscribe to the device:
-echo '6864001e636c'$mac$twenties$reversedMac$twenties | xxd -r -p | nc -u -w1 -p$port $ip $port | xxd -p
+status=$(echo '6864001e636c'$mac$twenties$reversedMac$twenties | xxd -r -p | nc -u -w1 -p$port $ip $port | xxd -p)
 
 case $action in
 off)
@@ -20,7 +20,14 @@ on)
         ;;
 get)
         # Switch status
-     
+	#echo "${status:47}"
+	if [ ${status:47} = 0 ]; then
+		echo "switch is off";
+	elif [ ${status:47} = 1 ]; then
+		echo "switch is on";
+	else
+		echo "ERROR";
+	fi
 esac
 
 exit;
